@@ -6,9 +6,10 @@ import SliderButton from "./SliderButton";
 const Faucet = () => {
   const [address, setAddress] = useState<any>("");
   const [isValidAddress, setIsValidAddress] = useState(false);
+  const [isTestNet, setIsTestNet] = useState(false);
   const toast = useToast();
-  let publicKey: PublicKey;
   const validateSolanaAddress = async (addr: string) => {
+    let publicKey: PublicKey;
     try {
       publicKey = new PublicKey(addr);
       return await PublicKey.isOnCurve(publicKey.toBytes());
@@ -27,11 +28,19 @@ const Faucet = () => {
 
   const requestAirDrop = async () => {
     try {
-      const NODE_RPC = "https://api.testnet.solana.com"; // devnet environment
+      const NODE_RPC = isTestNet
+        ? "https://api.testnet.solana.com"
+        : "https://api.devnet.solana.com"; // devnet environment
+      console.log("The node rpc is ", NODE_RPC);
       const CONNECTION = new Connection(NODE_RPC);
-      console.log("Calling request airdrop to address", address);
+      console.log(
+        "Calling request airdrop to address",
+        address,
+        NODE_RPC,
+        new PublicKey(address)
+      );
       const confirmation = await CONNECTION.requestAirdrop(
-        publicKey,
+        new PublicKey(address),
         1000000000
       );
       alert(confirmation);
@@ -57,7 +66,7 @@ const Faucet = () => {
   };
   return (
     <VStack>
-      <SliderButton />
+      <SliderButton isTestNet={isTestNet} setIsTestNet={setIsTestNet} />
       <Input
         placeholder="Enter solana wallet address"
         value={address}
