@@ -43,6 +43,12 @@
   }
 }
 
+.sliderContainer {
+  background-color: #0070f3;
+  padding: "10px";
+  border-radius: "50%";
+  border: "2px solid #ffffff";
+}
 .footer {
   display: flex;
   flex: 1;
