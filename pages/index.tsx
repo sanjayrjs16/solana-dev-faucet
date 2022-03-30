@@ -1,4 +1,4 @@
-import { Center, Heading, VStack } from "@chakra-ui/react";
+import { Text, Heading, VStack } from "@chakra-ui/react";
 import type { NextPage } from "next";
 import Head from "next/head";
 import Image from "next/image";
@@ -20,17 +20,24 @@ const Home: NextPage = () => {
       <main className={styles.main}>
         <VStack mb={10}>
           <Heading as="h1" size={"2xl"}>
-            The Stardust faucet
+            ✨{" "}
+            <span className={styles.animateCharcter}>
+              ☉ The Stardust faucet ☉{" "}
+            </span>
+            ✨
           </Heading>
+          <Text color={"whiteAlpha.800"} fontSize="2xl">
+            Thirsty from all that glass chewing ?
+          </Text>
+          <Text color={"whiteAlpha.800"} fontSize="xl">
+            Use this faucet airdrop yourself ☉
+          </Text>
           <Heading
             as="h2"
             size={"md"}
             textAlign={"center"}
             color={"ButtonFace"}
-          >
-            If you're a thirsty from all that glass chewing, use this faucet
-            airdrop yourself some devnet/testnet SOL :)
-          </Heading>
+          ></Heading>
         </VStack>
         <Faucet />
       </main>

@@ -1,63 +1,58 @@
 import { Button, Input, VStack, useToast } from "@chakra-ui/react";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, ChangeEvent } from "react";
 import { PublicKey, Connection } from "@solana/web3.js";
 import SliderButton from "./SliderButton";
 
 const Faucet = () => {
   const [address, setAddress] = useState<any>("");
-  const [isValidAddress, setIsValidAddress] = useState(false);
-  const [isTestNet, setIsTestNet] = useState(false);
+  const [isValid, setisValid] = useState<boolean>(false);
+  const [isTestNet, setIsTestNet] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(false);
   const toast = useToast();
-  const validateSolanaAddress = async (addr: string) => {
+  const validateSolanaAddress = (addr: string) => {
     let publicKey: PublicKey;
     try {
       publicKey = new PublicKey(addr);
-      return await PublicKey.isOnCurve(publicKey.toBytes());
+      return PublicKey.isOnCurve(publicKey.toBytes());
     } catch (err) {
       return false;
     }
   };
 
   useEffect(() => {
-    const checkAddressValid = async () => {
-      const isValid = await validateSolanaAddress(address);
-      setIsValidAddress(isValid);
-    };
-    checkAddressValid();
+    const isValid = validateSolanaAddress(address);
+    setisValid(isValid);
   }, [address]);
 
   const requestAirDrop = async () => {
     try {
       const NODE_RPC = isTestNet
         ? "https://api.testnet.solana.com"
-        : "https://api.devnet.solana.com"; // devnet environment
-      console.log("The node rpc is ", NODE_RPC);
+        : "https://api.devnet.solana.com";
+
       const CONNECTION = new Connection(NODE_RPC);
-      console.log(
-        "Calling request airdrop to address",
-        address,
-        NODE_RPC,
-        new PublicKey(address)
-      );
+      setLoading(true);
       const confirmation = await CONNECTION.requestAirdrop(
         new PublicKey(address),
         1000000000
       );
-      alert(confirmation);
+      setLoading(false);
       toast({
         position: "top",
         title: "Airdrop succesful",
-        description: "Please check your wallet",
+        description: `Txn Hash ${confirmation}. Please check your wallet and SolScan`,
         status: "success",
         duration: 5000,
         isClosable: true,
       });
+      setAddress("");
     } catch (err) {
       console.log("Error: ", err);
+      setLoading(false);
       toast({
         position: "top",
         title: "Airdrop failed",
-        description: "Something went wrong  ",
+        description: "Something went wrong.",
         status: "error",
         duration: 5000,
         isClosable: true,
@@ -73,10 +68,19 @@ const Faucet = () => {
         size="lg"
         width={"lg"}
         textAlign="center"
-        onChange={(e: any) => setAddress(e.target.value)}
-        color={"black"}
+        onChange={(e: ChangeEvent<HTMLInputElement>) =>
+          setAddress(e.target.value)
+        }
+        color={"blackAlpha.900"}
+        backgroundColor="plum"
+        _placeholder={{ color: "blackAlpha.700" }}
       />
-      <Button onClick={() => requestAirDrop()} disabled={!isValidAddress}>
+      <Button
+        mt={20}
+        onClick={requestAirDrop}
+        disabled={!isValid}
+        isLoading={loading}
+      >
         Request airdrop
       </Button>
     </VStack>

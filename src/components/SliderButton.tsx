@@ -1,51 +1,38 @@
-import React, { useState } from "react";
-import styles from "../../styles/Home.module.css";
-import { Box, Button, ButtonGroup, Container, Slide } from "@chakra-ui/react";
+import React from "react";
+import { Button } from "@chakra-ui/react";
 
 interface SliderButtonProps {
   isTestNet: boolean;
   setIsTestNet: Function;
 }
+const activeBtn = {
+  border: "4px solid springgreen",
+  backgroundColor: "springgreen",
+  borderRadius: "50rem",
+};
+const inActiveBtn = { border: "4px solid grey", backgroundColor: "grey" };
+
 const SliderButton = ({ isTestNet, setIsTestNet }: SliderButtonProps) => {
   return (
     <div
       style={{
         position: "relative",
-        // border: "2px solid black",
         borderRadius: "50px",
         overflow: "hidden",
         backgroundColor: "GrayText",
+        marginBottom: "40px",
       }}
     >
       <Button
         onClick={() => setIsTestNet(true)}
-        style={
-          isTestNet
-            ? {
-                border: "4px solid springgreen",
-                // transform: "scale(1.25)",
-                backgroundColor: "springgreen",
-                borderRadius: "50rem",
-              }
-            : { border: "4px solid grey", backgroundColor: "grey" }
-        }
+        style={isTestNet ? activeBtn : inActiveBtn}
       >
         {isTestNet ? "✅" : ""} Testnet
       </Button>
 
       <Button
         onClick={() => setIsTestNet(false)}
-        style={
-          !isTestNet
-            ? {
-                border: "4px solid springgreen",
-
-                // transform: "scale(1.25)",
-                backgroundColor: "springgreen",
-                borderRadius: "50rem",
-              }
-            : { border: "4px solid grey", backgroundColor: "GrayText" }
-        }
+        style={!isTestNet ? activeBtn : inActiveBtn}
       >
         {!isTestNet ? "✅" : ""} Devnet
       </Button>

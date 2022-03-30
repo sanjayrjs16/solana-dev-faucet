@@ -10,15 +10,51 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  background: linear-gradient(62deg, #01fdb2, #568de0, #904ae0, #e865ec);
-  animation: gradient 15s ease infinite;
+  background: #000000;
+  /* background: linear-gradient(62deg, #01fdb2, #568de0, #904ae0, #e865ec); */
+  /* animation: gradient 15s ease infinite; */
   background-size: 400% 400%;
+}
+
+.animateCharcter {
+  text-transform: uppercase;
+  background-image: linear-gradient(
+    -225deg,
+    #07f7af 0%,
+    #219db3 29%,
+    #8044ce 67%,
+    #db0fdb 100%
+  );
+  background-size: auto auto;
+  background-clip: border-box;
+  background-size: 200% auto;
+  padding-left: "0.9rem";
+  color: #fff;
+  background-clip: text;
+  text-fill-color: transparent;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: textclip 2s linear infinite;
+  display: inline-block;
+  font-size: 4rem;
+}
+
+@keyframes textclip {
+  0% {
+    background-position: 0 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
 }
 
 .gradientBackground {
   background: linear-gradient(62deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
-  animation: gradient 15s ease infinite;
-  background-size: 400% 400%;
+  animation: gradient 10s ease infinite;
+  background-size: 100% 100%;
 }
 @-webkit-keyframes gradient {
   0% {
