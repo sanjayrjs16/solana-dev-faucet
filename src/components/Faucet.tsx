@@ -1,9 +1,8 @@
 import { Button, Input, VStack, useToast } from "@chakra-ui/react";
 import React, { useState, ChangeEvent, useEffect } from "react";
 import { PublicKey, Connection } from "@solana/web3.js";
-import ReCAPTCHA from "react-google-recaptcha";
-
 import SliderButton from "./SliderButton";
+import ReCAPTCHA from "react-google-recaptcha";
 
 const Faucet = () => {
   const [address, setAddress] = useState<any>("");
@@ -11,8 +10,8 @@ const Faucet = () => {
   const [isValid, setIsValid] = useState<boolean>(false);
   const [isHuman, setIsHuman] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
-  const toast = useToast();
 
+  const toast = useToast();
   const siteKey: any = process.env.SITE_KEY;
   const validateSolanaAddress = (addrs: string) => {
     let publicKey: PublicKey;
@@ -24,6 +23,12 @@ const Faucet = () => {
       return false;
     }
   };
+  useEffect(() => {
+    const isValid = validateSolanaAddress(address);
+    setIsValid(isValid);
+  }, [address]);
+
+  //https://api.testnet.solana.com
 
   const requestAirdrop = async () => {
     try {
@@ -44,36 +49,27 @@ const Faucet = () => {
         duration: 5000,
         isClosable: true,
       });
-      setLoading(false);
       setAddress("");
+      setLoading(false);
     } catch (err) {
       console.error(err);
       toast({
         position: "top",
-        title: "Airdrop failed !",
+        title: "Airdrop failed!",
         description: `Something went wrong`,
         status: "error",
         duration: 5000,
         isClosable: true,
       });
       setLoading(false);
+      return false;
     }
   };
 
   function onChange(value: any) {
     console.log("Captcha value:", value);
-    if (isValid) {
-      setIsHuman(true);
-    } else {
-      setIsHuman(false);
-    }
+    setIsHuman(true);
   }
-
-  useEffect(() => {
-    const isValid = validateSolanaAddress(address);
-    setIsValid(isValid);
-  }, [address]);
-
   return (
     <VStack>
       <SliderButton isTestNet={isTestNet} setIsTestNet={setIsTestNet} />
@@ -90,11 +86,10 @@ const Faucet = () => {
         backgroundColor="plum"
         _placeholder={{ color: "blackAlpha.700" }}
       />
-      {console.log("site key is", process.env.SITE_KEY)}
-      <ReCAPTCHA sitekey={siteKey} onChange={onChange} />,
+      <ReCAPTCHA sitekey={siteKey} onChange={onChange} />
       <Button
         mt={20}
-        disabled={!isHuman}
+        disabled={!isValid || !isHuman}
         onClick={requestAirdrop}
         isLoading={loading}
       >
