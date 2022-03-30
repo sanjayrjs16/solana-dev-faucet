@@ -4,6 +4,7 @@ import { PublicKey, Connection } from "@solana/web3.js";
 import ReCAPTCHA from "react-google-recaptcha";
 
 import SliderButton from "./SliderButton";
+
 const Faucet = () => {
   const [address, setAddress] = useState<any>("");
   const [isTestNet, setIsTestNet] = useState<boolean>(false);
@@ -12,6 +13,7 @@ const Faucet = () => {
   const [loading, setLoading] = useState<boolean>(false);
   const toast = useToast();
 
+  const siteKey: any = process.env.SITE_KEY;
   const validateSolanaAddress = (addrs: string) => {
     let publicKey: PublicKey;
     try {
@@ -88,11 +90,8 @@ const Faucet = () => {
         backgroundColor="plum"
         _placeholder={{ color: "blackAlpha.700" }}
       />
-      <ReCAPTCHA
-        sitekey="6LceHC0fAAAAABFeERtSLI-CbUtWzhxlAk10S5OH"
-        onChange={onChange}
-      />
-      ,
+      {console.log("site key is", process.env.SITE_KEY)}
+      <ReCAPTCHA sitekey={siteKey} onChange={onChange} />,
       <Button
         mt={20}
         disabled={!isHuman}
