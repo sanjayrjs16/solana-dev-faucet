@@ -32,12 +32,6 @@ const Home: NextPage = () => {
           <Text color={"whiteAlpha.800"} fontSize="xl">
             Use this faucet airdrop yourself ☉
           </Text>
-          <Heading
-            as="h2"
-            size={"md"}
-            textAlign={"center"}
-            color={"ButtonFace"}
-          ></Heading>
         </VStack>
         <Faucet />
       </main>

@@ -1,64 +1,77 @@
 import { Button, Input, VStack, useToast } from "@chakra-ui/react";
-import React, { useEffect, useState, ChangeEvent } from "react";
+import React, { useState, ChangeEvent, useEffect } from "react";
 import { PublicKey, Connection } from "@solana/web3.js";
-import SliderButton from "./SliderButton";
+import ReCAPTCHA from "react-google-recaptcha";
 
+import SliderButton from "./SliderButton";
 const Faucet = () => {
   const [address, setAddress] = useState<any>("");
-  const [isValid, setisValid] = useState<boolean>(false);
   const [isTestNet, setIsTestNet] = useState<boolean>(false);
+  const [isValid, setIsValid] = useState<boolean>(false);
+  const [isHuman, setIsHuman] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
   const toast = useToast();
-  const validateSolanaAddress = (addr: string) => {
+
+  const validateSolanaAddress = (addrs: string) => {
     let publicKey: PublicKey;
     try {
-      publicKey = new PublicKey(addr);
+      publicKey = new PublicKey(addrs);
       return PublicKey.isOnCurve(publicKey.toBytes());
     } catch (err) {
+      console.error(err);
       return false;
     }
   };
 
-  useEffect(() => {
-    const isValid = validateSolanaAddress(address);
-    setisValid(isValid);
-  }, [address]);
-
-  const requestAirDrop = async () => {
+  const requestAirdrop = async () => {
     try {
       const NODE_RPC = isTestNet
         ? "https://api.testnet.solana.com"
         : "https://api.devnet.solana.com";
-
       const CONNECTION = new Connection(NODE_RPC);
       setLoading(true);
       const confirmation = await CONNECTION.requestAirdrop(
         new PublicKey(address),
         1000000000
       );
-      setLoading(false);
       toast({
         position: "top",
-        title: "Airdrop succesful",
-        description: `Txn Hash ${confirmation}. Please check your wallet and SolScan`,
+        title: "Airdrop successful !",
+        description: `Please check your wallet/solana explorer. Txn Hash:  ${confirmation}`,
         status: "success",
         duration: 5000,
         isClosable: true,
       });
+      setLoading(false);
       setAddress("");
     } catch (err) {
-      console.log("Error: ", err);
-      setLoading(false);
+      console.error(err);
       toast({
         position: "top",
-        title: "Airdrop failed",
-        description: "Something went wrong.",
+        title: "Airdrop failed !",
+        description: `Something went wrong`,
         status: "error",
         duration: 5000,
         isClosable: true,
       });
+      setLoading(false);
     }
   };
+
+  function onChange(value: any) {
+    console.log("Captcha value:", value);
+    if (isValid) {
+      setIsHuman(true);
+    } else {
+      setIsHuman(false);
+    }
+  }
+
+  useEffect(() => {
+    const isValid = validateSolanaAddress(address);
+    setIsValid(isValid);
+  }, [address]);
+
   return (
     <VStack>
       <SliderButton isTestNet={isTestNet} setIsTestNet={setIsTestNet} />
@@ -75,10 +88,15 @@ const Faucet = () => {
         backgroundColor="plum"
         _placeholder={{ color: "blackAlpha.700" }}
       />
+      <ReCAPTCHA
+        sitekey="6LceHC0fAAAAABFeERtSLI-CbUtWzhxlAk10S5OH"
+        onChange={onChange}
+      />
+      ,
       <Button
         mt={20}
-        onClick={requestAirDrop}
-        disabled={!isValid}
+        disabled={!isHuman}
+        onClick={requestAirdrop}
         isLoading={loading}
       >
         Request airdrop
